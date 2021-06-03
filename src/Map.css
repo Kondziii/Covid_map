@@ -1,0 +1,26 @@
+body {
+  /* background-color: #01171b; */
+  background: #2b3031;
+}
+
+.country {
+  /* fill: #00394f; */
+  stroke: rgb(65, 65, 65);
+  stroke-width: 0.1;
+}
+
+.country:hover {
+  transition: 0.4s;
+  cursor: pointer;
+  opacity: 0.85;
+}
+
+.legend {
+  fill: white;
+  font-size: 1.1rem;
+  z-index: 20;
+}
+
+.indicator {
+  max-height: 60vh;
+}
