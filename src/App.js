@@ -58,6 +58,7 @@ function App() {
           setFlag={setFlag}
           mapData={covidStats}
           variant={variant}
+          selected={selected}
         ></Map>
       )}
       <Stats

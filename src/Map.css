@@ -5,8 +5,8 @@ body {
 
 .country {
   /* fill: #00394f; */
-  stroke: rgb(65, 65, 65);
-  stroke-width: 0.1;
+  /* stroke: rgb(65, 65, 65); */
+  stroke-width: 'none';
 }
 
 .country:hover {
@@ -17,10 +17,12 @@ body {
 
 .legend {
   fill: white;
-  font-size: 1.1rem;
+  font-size: 0.9rem;
   z-index: 20;
 }
 
-.indicator {
-  max-height: 60vh;
+.legend_title {
+  font-size: 1.2rem;
+  fill: white;
+  font-weight: bold;
 }
