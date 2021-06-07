@@ -16,7 +16,7 @@ function App() {
   const [deaths, setDeaths] = useState(0);
   const [active, setActive] = useState(0);
   const [selected, setSelected] = useState(false);
-  const [variant, setVariant] = useState('recovered');
+  const [variant, setVariant] = useState('cases');
 
   useEffect(() => {
     getReport(mapData).then((data) => {
@@ -69,6 +69,7 @@ function App() {
         deaths={deaths}
         active={active}
         selected={selected}
+        variant={variant}
         setVariant={setVariant}
       ></Stats>
     </div>

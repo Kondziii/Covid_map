@@ -36,6 +36,10 @@ const useStyles = makeStyles((theme) => ({
     },
   },
 
+  selectedOption: {
+    background: 'rgba(255,255,255,0.1)',
+  },
+
   info: {
     marginLeft: '8px',
     fontWeight: 'bold',
@@ -104,7 +108,12 @@ const Stats = (props) => {
         <Grid item lg={10}>
           <Grid container direction='row' justify='center' alignItems='center'>
             <Grid item lg={3} md={6} sm={12} xs={12}>
-              <Button className={classes.option} onClick={confirmedBtnHandler}>
+              <Button
+                className={`${classes.option}  ${
+                  props.variant === 'cases' && classes.selectedOption
+                }`}
+                onClick={confirmedBtnHandler}
+              >
                 <Avatar
                   style={{
                     marginRight: '10px',
@@ -121,7 +130,12 @@ const Stats = (props) => {
               </Button>
             </Grid>
             <Grid item lg={3} md={6} sm={12} xs={12}>
-              <Button className={classes.option} onClick={activeBtnHandler}>
+              <Button
+                className={`${classes.option}  ${
+                  props.variant === 'active' && classes.selectedOption
+                }`}
+                onClick={activeBtnHandler}
+              >
                 <Avatar
                   style={{
                     marginRight: '10px',
@@ -138,7 +152,12 @@ const Stats = (props) => {
               </Button>
             </Grid>
             <Grid item lg={3} md={6} sm={12} xs={12}>
-              <Button className={classes.option} onClick={recoveredBtnHandler}>
+              <Button
+                className={`${classes.option}  ${
+                  props.variant === 'recovered' && classes.selectedOption
+                }`}
+                onClick={recoveredBtnHandler}
+              >
                 {' '}
                 <Avatar
                   style={{
@@ -156,7 +175,12 @@ const Stats = (props) => {
               </Button>
             </Grid>
             <Grid item lg={3} md={6} sm={12} xs={12}>
-              <Button className={classes.option} onClick={deathsBtnHandler}>
+              <Button
+                className={`${classes.option}  ${
+                  props.variant === 'deaths' && classes.selectedOption
+                }`}
+                onClick={deathsBtnHandler}
+              >
                 <Avatar
                   style={{
                     marginRight: '10px',

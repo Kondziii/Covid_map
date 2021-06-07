@@ -1,36 +1,18 @@
-import { useRef, useEffect } from 'react';
+import { useRef, useEffect, useState } from 'react';
 import ArrowDropUpIcon from '@material-ui/icons/ArrowDropUp';
-import {
-  select,
-  geoPath,
-  geoMercator,
-  zoom,
-  min,
-  max,
-  median,
-  scalePow,
-  quantile,
-  scaleLinear,
-} from 'd3';
+import { select, geoPath, geoMercator, zoom, min, max, scalePow } from 'd3';
 import './Map.css';
 
 const colorPalette = {
-  cases: ['#feedde', '#fdbe85', '#fd8d3c', '#e6550d', '#a63603'],
-  active: ['#DAF5FF', '#82A5FF', '#4E49FF', '#313FC6', '#051627'],
-  recovered: {
-    begin: '#dbead5',
-    median: '#008000',
-    end: '#132c0d',
-  },
-  deaths: {
-    begin: '#ffdfd4',
-    median: '#cc0000',
-    end: '#52170b',
-  },
+  cases: ['white', 'rgb(255,165,0)'],
+  active: ['white', 'blue'],
+  recovered: ['white', 'green'],
+  deaths: ['white', 'red'],
 };
 
 const Map = (props) => {
   const map = useRef();
+  const [indicator, setIndicator] = useState(null);
 
   let svg = null;
   const w = 2000;
@@ -40,61 +22,61 @@ const Map = (props) => {
     return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
   };
 
-  const createLegend = (values, scale) => {
+  const createLegend = (minValue, maxValue, scale) => {
     const defs = svg.append('defs');
 
     const linearGradient = defs
       .append('linearGradient')
       .attr('id', 'linear-gradient');
 
-    values.forEach((value, index) => {
+    for (let i = 0; i <= 100; i++) {
       linearGradient
         .append('stop')
-        .attr('offset', `${index * 25}%`)
-        .attr('stop-color', `${scale(value)}`);
-    });
+        .attr('offset', `${i}%`)
+        .attr('stop-color', `${scale((i / 100) * maxValue)}`);
+    }
 
     svg
       .append('rect')
-      .attr('width', '20%')
+      .attr('width', '350px')
       .attr('height', '25px')
-      .attr('transform', 'translate(15, 570)')
+      .attr('transform', 'translate(15, 560)')
       .style('fill', 'url(#linear-gradient)');
 
     svg
       .append('rect')
       .attr('width', '25px')
       .attr('height', '25px')
-      .attr('transform', 'translate(15, 500)')
+      .attr('transform', 'translate(15, 490)')
       .style('fill', '#aaa');
 
     svg
       .append('text')
       .text(`- No data available`)
       .attr('class', `legend`)
-      .attr('transform', 'translate(50, 518)');
+      .attr('transform', 'translate(50, 508)');
 
     svg
       .append('text')
       .text('Number of people')
       .attr('class', `legend`)
-      .attr('transform', 'translate(15, 560)');
+      .attr('transform', 'translate(15, 550)');
 
     svg
       .append('text')
       .text('Latest covid-19 statistics:')
       .attr('class', `legend_title`)
-      .attr('transform', 'translate(15, 470)');
+      .attr('transform', 'translate(15, 460)');
 
     svg
       .append('text')
-      .text(formatNumber(values[4]))
+      .text(formatNumber(maxValue))
       .attr('class', `legend`)
-      .attr('transform', 'translate(290, 620)');
+      .attr('transform', 'translate(310, 620)');
 
     svg
       .append('text')
-      .text(`${values[0] > 0 ? values[0] : 0}`)
+      .text(`${minValue > 0 ? minValue : 0}`)
       .attr('class', `legend`)
       .attr('transform', 'translate(15, 620)');
   };
@@ -112,30 +94,14 @@ const Map = (props) => {
       (feature) => feature.properties[props.variant]
     );
 
-    const meanProp = median(
-      props.mapData.features,
-      (feature) => feature.properties[props.variant]
-    );
-
     const maxProp = max(
       props.mapData.features,
       (feature) => feature.properties[props.variant]
     );
 
-    const q1 = quantile(
-      props.mapData.features,
-      0.25,
-      (feature) => feature.properties[props.variant]
-    );
-
-    const q2 = quantile(
-      props.mapData.features,
-      0.75,
-      (feature) => feature.properties[props.variant]
-    );
-
-    const colorScale = scaleLinear()
-      .domain([minProp, q1, meanProp, q2, maxProp])
+    const colorScale = scalePow()
+      .exponent(0.3)
+      .domain([minProp, maxProp])
       .range(colorPalette[props.variant]);
 
     const pathGenerator = geoPath().projection(projection);
@@ -171,12 +137,13 @@ const Map = (props) => {
         props.setDeaths(feature.properties.deaths);
         props.setActive(feature.properties.active);
         props.setFlag(feature.properties.flag);
+        setIndicator((feature.properties[props.variant] / maxProp) * 350);
       })
       .on('mouseout', () => {
         props.setSelected(false);
       });
 
-    createLegend([minProp, q1, meanProp, q2, maxProp], colorScale);
+    createLegend(minProp, maxProp, colorScale);
 
     svg.call(
       zoom().on('zoom', (event) => {
@@ -199,10 +166,10 @@ const Map = (props) => {
       {props.selected && (
         <ArrowDropUpIcon
           style={{
-            fontSize: '2rem',
+            fontSize: '3rem',
             color: 'white',
             position: 'absolute',
-            left: 0,
+            left: !indicator ? '-9' : `${indicator - 9}`,
             bottom: 135,
           }}
         />
