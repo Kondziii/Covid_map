@@ -20,6 +20,7 @@ function App() {
 
   useEffect(() => {
     getReport(mapData).then((data) => {
+      console.log(data);
       setCovidStats(data);
     });
     getTotalReport().then((data) => {
