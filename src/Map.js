@@ -78,8 +78,6 @@ const Map = (props) => {
       .attr('class', `legend_title`)
       .attr('transform', 'translate(0, 20)');
 
-    console.log();
-
     svg_legend
       .append('text')
       .text(formatNumber(maxValue))
