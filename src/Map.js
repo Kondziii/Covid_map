@@ -23,7 +23,17 @@ const Map = (props) => {
   };
 
   const createLegend = (minValue, maxValue, scale) => {
-    const defs = svg.append('defs');
+    const legend = svg
+      .append('foreignObject')
+      .attr('class', 'legend_container')
+      .attr('transform', 'translate(10, 400)');
+
+    const svg_legend = legend
+      .append('svg')
+      .attr('width', '100%')
+      .attr('height', '100%');
+
+    const defs = svg_legend.append('defs');
 
     const linearGradient = defs
       .append('linearGradient')
@@ -36,49 +46,54 @@ const Map = (props) => {
         .attr('stop-color', `${scale((i / 100) * maxValue)}`);
     }
 
-    svg
+    svg_legend
       .append('rect')
-      .attr('width', '350px')
+      .attr('width', '370px')
       .attr('height', '25px')
-      .attr('transform', 'translate(15, 560)')
-      .style('fill', 'url(#linear-gradient)');
+      .style('fill', 'url(#linear-gradient)')
+      .attr('transform', 'translate(0, 120)');
 
-    svg
+    svg_legend
       .append('rect')
       .attr('width', '25px')
       .attr('height', '25px')
-      .attr('transform', 'translate(15, 490)')
+      .attr('transform', 'translate(0, 50)')
       .style('fill', '#aaa');
 
-    svg
+    svg_legend
       .append('text')
       .text(`- No data available`)
       .attr('class', `legend`)
-      .attr('transform', 'translate(50, 508)');
+      .attr('transform', 'translate(40, 68)');
 
-    svg
+    svg_legend
       .append('text')
       .text('Number of people')
       .attr('class', `legend`)
-      .attr('transform', 'translate(15, 550)');
+      .attr('transform', 'translate(0, 110)');
 
-    svg
+    svg_legend
       .append('text')
       .text('Latest covid-19 statistics:')
       .attr('class', `legend_title`)
-      .attr('transform', 'translate(15, 460)');
+      .attr('transform', 'translate(0, 20)');
 
-    svg
+    console.log();
+
+    svg_legend
       .append('text')
       .text(formatNumber(maxValue))
       .attr('class', `legend`)
-      .attr('transform', 'translate(310, 620)');
+      .attr(
+        'transform',
+        `translate(${(8 - maxValue.toString().length) * 10 + 290}, 180)`
+      );
 
-    svg
+    svg_legend
       .append('text')
       .text(`${minValue > 0 ? minValue : 0}`)
       .attr('class', `legend`)
-      .attr('transform', 'translate(15, 620)');
+      .attr('transform', 'translate(0, 180)');
   };
 
   useEffect(() => {
@@ -137,7 +152,7 @@ const Map = (props) => {
         props.setDeaths(feature.properties.deaths);
         props.setActive(feature.properties.active);
         props.setFlag(feature.properties.flag);
-        setIndicator((feature.properties[props.variant] / maxProp) * 350);
+        setIndicator((feature.properties[props.variant] / maxProp) * 370);
       })
       .on('mouseout', () => {
         props.setSelected(false);
@@ -169,8 +184,8 @@ const Map = (props) => {
             fontSize: '3rem',
             color: 'white',
             position: 'absolute',
-            left: !indicator ? '-9' : `${indicator - 9}`,
-            bottom: 135,
+            left: !indicator ? '0' : `${indicator}`,
+            bottom: 160,
           }}
         />
       )}
